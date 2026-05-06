@@ -6,27 +6,37 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout this repo
+        uses: actions/checkout@v4
 
       - name: Clone AssettoServer v0.0.54
         run: git clone --depth=1 --branch v0.0.54 https://github.com/compujuckel/AssettoServer.git
 
-      - name: Copy plugin into AS directory
-        run: cp -r KeepAlivePlugin AssettoServer/KeepAlivePlugin
+      - name: Create plugin folder and copy files
+        run: |
+          mkdir -p AssettoServer/KeepAlivePlugin
+          cp KeepAlivePlugin.cs AssettoServer/KeepAlivePlugin/
+          cp KeepAlivePlugin.csproj AssettoServer/KeepAlivePlugin/
 
       - name: Fix csproj path
-        run: sed -i 's|..\\AssettoServer\\|../AssettoServer/|g' AssettoServer/KeepAlivePlugin/KeepAlivePlugin.csproj
+        run: |
+          sed -i 's|..\\AssettoServer\\AssettoServer.csproj|../AssettoServer/AssettoServer.csproj|g' \
+            AssettoServer/KeepAlivePlugin/KeepAlivePlugin.csproj
 
       - name: Setup .NET 8
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
 
-      - name: Build
-        run: dotnet build AssettoServer/KeepAlivePlugin/KeepAlivePlugin.csproj -c Release
+      - name: Restore dependencies
+        run: dotnet restore AssettoServer/KeepAlivePlugin/KeepAlivePlugin.csproj
+
+      - name: Build Release
+        run: dotnet build AssettoServer/KeepAlivePlugin/KeepAlivePlugin.csproj -c Release --no-restore
 
       - name: Upload DLL
         uses: actions/upload-artifact@v4
         with:
-          name: KeepAlivePlugin
+          name: KeepAlivePlugin-DLL
           path: AssettoServer/KeepAlivePlugin/bin/Release/net8.0/KeepAlivePlugin.dll
+
