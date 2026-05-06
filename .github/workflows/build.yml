@@ -1,0 +1,32 @@
+name: Build KeepAlivePlugin
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Clone AssettoServer v0.0.54
+        run: git clone --depth=1 --branch v0.0.54 https://github.com/compujuckel/AssettoServer.git
+
+      - name: Copy plugin into AS directory
+        run: cp -r KeepAlivePlugin AssettoServer/KeepAlivePlugin
+
+      - name: Fix csproj path
+        run: sed -i 's|..\\AssettoServer\\|../AssettoServer/|g' AssettoServer/KeepAlivePlugin/KeepAlivePlugin.csproj
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Build
+        run: dotnet build AssettoServer/KeepAlivePlugin/KeepAlivePlugin.csproj -c Release
+
+      - name: Upload DLL
+        uses: actions/upload-artifact@v4
+        with:
+          name: KeepAlivePlugin
+          path: AssettoServer/KeepAlivePlugin/bin/Release/net8.0/KeepAlivePlugin.dll
