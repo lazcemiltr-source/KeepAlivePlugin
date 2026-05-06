@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <!-- AssettoServer plugin olarak yüklenebilmesi için zorunlu -->
+    <EnableDynamicLoading>true</EnableDynamicLoading>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>KeepAlivePlugin</AssemblyName>
+    <RootNamespace>KeepAlivePlugin</RootNamespace>
+    <Version>1.0.0</Version>
+    <Authors>KeepAlivePlugin Contributors</Authors>
+    <Description>AssettoServer 7/24 Keep-Alive Plugin</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!--
+      AssettoServer projesine referans.
+      ÖNEMLİ: Bu dosyayı AssettoServer kaynak kodu dizininin yanındaki
+      bir klasöre koyun ve aşağıdaki yolu güncelleyin.
+      Örnek dizin yapısı:
+        /sunucu-kodu/
+          AssettoServer/            ← AssettoServer kaynak kodu
+          KeepAlivePlugin/          ← Bu proje
+    -->
+    <ProjectReference Include="..\AssettoServer\AssettoServer.csproj">
+      <Private>false</Private>
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </ProjectReference>
+  </ItemGroup>
+
+</Project>
